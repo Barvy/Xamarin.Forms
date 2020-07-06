@@ -87,12 +87,11 @@ namespace Xamarin.Forms.Controls.Issues
 
 		void AssertSafeAreaText(string text)
 		{
-			string result = 
+			var element =
 				RunningApp
-					.WaitForFirstElement(_safeAreaAutomationId)
-					.ReadText();
+					.WaitForFirstElement(_safeAreaAutomationId);
 
-			Assert.AreEqual(text, result);
+			element.AssertHasText(text);
 		}
 
 		[Test]
