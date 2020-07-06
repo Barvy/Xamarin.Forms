@@ -15,6 +15,16 @@ namespace Xamarin.UITest
 {
 	internal static class AppExtensions
 	{
+		public static void AttachScreenshotToTestContext(this IApp app, string title)
+		{
+			((ScreenshotConditionalApp)app).AttachScreenshotToTestContext(title);
+		}
+
+		public static void AttachScreenshotIfOutcomeFailed(this IApp app)
+		{
+			((ScreenshotConditionalApp)app).AttachScreenshotIfOutcomeFailed();
+		}
+
 		public static AppResult WaitForFirstElement(this IApp app, string marked, string timeoutMessage = "Timed out waiting for element...")
 		{
 			if (app is ScreenshotConditionalApp scp)
@@ -147,6 +157,7 @@ namespace Xamarin.Forms.Core.UITests
 			var text = Regex.Match(page, "'(?<text>[^']*)'").Groups["text"].Value;
 
 			app.WaitForElement("SearchBar");
+			app.ClearText(q => q.Raw("* marked:'SearchBar'"));
 			app.EnterText(q => q.Raw("* marked:'SearchBar'"), text);
 			app.DismissKeyboard();
 

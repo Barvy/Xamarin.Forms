@@ -24,7 +24,7 @@ namespace Xamarin.Forms.Core.UITests
 	public class WinDriverApp : IApp
 	{
 		public const string AppName = "Xamarin.Forms.ControlGallery.WindowsUniversal";
-		public static TimeSpan DefaultTimeout = TimeSpan.FromSeconds(20);
+		public static TimeSpan DefaultTimeout = TimeSpan.FromSeconds(15);
 
 		readonly Dictionary<string, string> _controlNameToTag = new Dictionary<string, string>
 		{
@@ -304,20 +304,6 @@ namespace Xamarin.Forms.Core.UITests
 		public void Repl()
 		{
 			throw new NotImplementedException();
-		}
-
-
-		public void ScreenshotFailure()
-		{
-			if (TestContext.CurrentContext.Result.Outcome.Status == TestStatus.Failed)
-			{
-				string filename = $"{TestContext.CurrentContext.Test.FullName}.png";
-				Screenshot screenshot = _session.GetScreenshot();
-				screenshot.SaveAsFile(filename, ScreenshotImageFormat.Png);
-				var file = new FileInfo(filename);
-
-				TestContext.AddTestAttachment(file.FullName, TestContext.CurrentContext.Test.FullName);
-			}
 		}
 
 		public FileInfo Screenshot(string title)

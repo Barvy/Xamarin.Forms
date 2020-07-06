@@ -2,6 +2,8 @@
 using System;
 using System.IO;
 using System.Linq;
+using NUnit.Framework;
+using NUnit.Framework.Interfaces;
 using Xamarin.Forms.Core.UITests;
 using Xamarin.UITest;
 using Xamarin.UITest.Queries;
@@ -214,12 +216,12 @@ namespace Xamarin.Forms.Controls
 		}
 
 		public AppResult WaitForFirstElement(string marked, string timeoutMessage = "Timed out waiting for element...",
-			TimeSpan? timeout = null, TimeSpan? retryFrequency = null, TimeSpan? postTimeout = null)
+			TimeSpan? timeout = null, TimeSpan? retryFrequency = null)
 		{
 #if __WINDOWS__
-			return (_app as WinDriverApp).WaitForFirstElement(marked);
+			return (_app as WinDriverApp).WaitForFirstElement(marked, timeoutMessage, timeout, retryFrequency);
 #else
-			return _app.WaitForElement(marked, timeoutMessage).FirstOrDefault();
+			return _app.WaitForElement(marked, timeoutMessage, timeout, retryFrequency).FirstOrDefault();
 #endif
 		}
 
@@ -480,14 +482,27 @@ namespace Xamarin.Forms.Controls
 				AppSetup.EndIsolate();
 			}
 
-			ScreenshotFailure();
+			AttachScreenshotIfOutcomeFailed();
 		}
 
-		public void ScreenshotFailure()
+		public void AttachScreenshotToTestContext(string title = null)
 		{
-#if __WINDOWS__
-			(_app as Core.UITests.WinDriverApp).ScreenshotFailure();
-#endif
+			title = title ?? TestContext.CurrentContext.Test.FullName
+				.Replace(".", "_")
+				.Replace(" ", "_");
+
+			FileInfo file = _app.Screenshot(title);
+
+			if (file != null)
+			{
+				TestContext.AddTestAttachment(file.FullName, TestContext.CurrentContext.Test.FullName);
+			}
+		}
+
+		public void AttachScreenshotIfOutcomeFailed()
+		{
+			if (TestContext.CurrentContext.Result.Outcome.Status == TestStatus.Failed)
+				AttachScreenshotToTestContext();
 		}
 
 #if __IOS__
