@@ -308,15 +308,27 @@ namespace Xamarin.Forms.Core.UITests
 
 		public FileInfo Screenshot(string title)
 		{
-			// TODO hartez 2017/07/18 10:16:56 Verify that this is working; seems a bit too simple	
-			string filename = $"{title}.png";
+			try
+			{
+				// TODO hartez 2017/07/18 10:16:56 Verify that this is working; seems a bit too simple	
+				string filename = $"{title}.png";
 
-			Screenshot screenshot = _session.GetScreenshot();
-			screenshot.SaveAsFile(filename, ScreenshotImageFormat.Png);
-			var file = new FileInfo(filename);
+				Screenshot screenshot = _session.GetScreenshot();
+				screenshot.SaveAsFile(filename, ScreenshotImageFormat.Png);
+				var file = new FileInfo(filename);
 
-			TestContext.AddTestAttachment(file.FullName, title);
-			return file;
+				TestContext.AddTestAttachment(file.FullName, title);
+				return file;
+			}
+			catch (OpenQA.Selenium.WebDriverException we)
+			when (we.Message.Contains("Currently selected window has been closed"))
+			{
+				return null;
+			}
+			catch (Exception exception)
+			{
+				throw;
+			}
 		}
 
 		public void ScrollDown(Func<AppQuery, AppQuery> withinQuery = null, ScrollStrategy strategy = ScrollStrategy.Auto,
