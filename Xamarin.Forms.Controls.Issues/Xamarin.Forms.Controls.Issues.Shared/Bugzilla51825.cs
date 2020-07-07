@@ -57,18 +57,12 @@ namespace Xamarin.Forms.Controls.Issues
 			var label = RunningApp.WaitForFirstElement("Bugzilla51825Label");
 
 			Assert.IsNotEmpty(label.ReadText());
-			Assert.AreEqual(
-				label.ReadText(),
-				RunningApp.WaitForFirstElement("Bugzilla51825SearchBar").ReadText());
+			Assert.AreEqual("Hello", label.ReadText());
 
 			RunningApp.Tap("Bugzilla51825Button");
 
 			var labelChange2 = RunningApp.WaitForFirstElement("Bugzilla51825Label");
-			Assert.IsNotEmpty(labelChange2.ReadText());
-			Assert.AreNotEqual(labelChange2.ReadText(), label.ReadText());
-			Assert.AreEqual(
-				labelChange2.ReadText(),
-				RunningApp.WaitForFirstElement("Bugzilla51825SearchBar").ReadText());
+			Assert.AreEqual("Test", labelChange2.ReadText());
 		}
 #endif
 	}
